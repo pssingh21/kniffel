@@ -9,18 +9,18 @@ import {
   EventEmitter,
   SimpleChanges,
   OnChanges
-} from "@angular/core";
+} from '@angular/core';
 
 @Component({
-  selector: "app-dice",
-  templateUrl: "./dice.component.html",
-  styleUrls: ["./dice.component.css"]
+  selector: 'app-dice',
+  templateUrl: './dice.component.html',
+  styleUrls: ['./dice.component.css']
 })
-export class DiceComponent implements OnInit, AfterViewInit {
-  @ViewChild("dice") dice: ElementRef;
+export class DiceComponent implements OnInit {
+  @ViewChild('dice') dice: ElementRef;
   @Input() diceNum: number;
   @Input() shouldDiceRoll: boolean;
-  canSelect: boolean = false;
+  canSelect = false;
   roll: number;
 
   @Output() diceResult = new EventEmitter<{
@@ -33,7 +33,7 @@ export class DiceComponent implements OnInit, AfterViewInit {
 
   selectDice() {
     if (this.canSelect) {
-      this.dice.nativeElement.classList.add("diceSelected");
+      this.dice.nativeElement.classList.add('diceSelected');
       this.diceResult.emit({
         diceNum: this.diceNum,
         result: this.roll,
@@ -44,19 +44,12 @@ export class DiceComponent implements OnInit, AfterViewInit {
   }
 
   unselectDice() {
-    this.dice.nativeElement.classList.remove("diceSelected");
+    this.dice.nativeElement.classList.remove('diceSelected');
     this.diceResult.emit({
       diceNum: this.diceNum,
       result: this.roll,
       isSelected: false
     });
-  }
-
-  ngAfterViewInit() {
-    let delay = Math.random() * 1000;
-    setTimeout(() => {
-      // this.rollAll();
-    }, delay);
   }
 
   ngOnInit() {}
@@ -68,9 +61,9 @@ export class DiceComponent implements OnInit, AfterViewInit {
 
     this.roll = Math.floor(Math.random() * 6 + 1);
     this.dice.nativeElement.classList = [];
-    this.dice.nativeElement.classList.add("dice");
+    this.dice.nativeElement.classList.add('dice');
     setTimeout(() => {
-      this.dice.nativeElement.classList.add("roll-" + this.roll);
+      this.dice.nativeElement.classList.add('roll-' + this.roll);
       this.diceResult.emit({
         diceNum: this.diceNum,
         result: this.roll,

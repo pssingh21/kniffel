@@ -3,9 +3,8 @@ import { DiceComponent } from "./dice/dice.component";
 import { QueryList } from "@angular/core/src/render3";
 import { element } from "protractor";
 import { NumberSymbol, JsonPipe } from "@angular/common";
-import * as _ from 'lodash';
-import { ToastrService } from 'ngx-toastr';
-
+import * as _ from "lodash";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-root",
@@ -63,7 +62,7 @@ export class AppComponent {
     this.dice[event.diceNum - 1].rollDice = !event.isSelected;
     this.dice.filter(elem => {
       return elem.rollDice === true;
-    }).length === 0 && this.attempts != 3
+    }).length === 0 && this.attempts !== 3
       ? this.compute()
       : null;
   }
@@ -73,13 +72,13 @@ export class AppComponent {
       return;
     }
     this.attempts++;
-    this.diceChildren.toArray().forEach(element => {
+    this.diceChildren.toArray().forEach( element => {
       if (element.shouldDiceRoll) {
         element.rollDice();
       }
     });
     if (this.attempts === 3) {
-      this.diceChildren.toArray().forEach(element => {
+      this.diceChildren.toArray().forEach( element => {
         if (element.canSelect && element.shouldDiceRoll) {
           element.selectDice();
         }
@@ -97,26 +96,11 @@ export class AppComponent {
   compute() {
     this.computing = true;
 
-    let numbers = this.dice.map(item => {
+    const numbers = this.dice.map(item => {
       return item.result;
     });
 
     this.populatePossibleArray(numbers);
-    //------------------------------------------------------------------//
-
-    // setTimeout(() => {
-    //   this.attempts = 0;
-    //   console.log(this.diceChildren.toArray());
-    //   this.diceChildren.toArray().forEach(element => {
-    //     element.canSelect = false;
-    //     element.shouldDiceRoll = true;
-    //     element.unselectDice();
-    //     this.computing = false;
-    //     this.possibleArrayDefined = false;
-    //   });
-    // }, 5000);
-
-    // this.computing = false;
   }
 
   initializeScore() {
@@ -147,7 +131,7 @@ export class AppComponent {
     this.allScores = this.allScores.slice();
   }
 
-  initializePossibleScore(){
+  initializePossibleScore() {
     this.possibleScore = {
       one: 0,
       two: 0,
@@ -172,111 +156,145 @@ export class AppComponent {
   }
 
   populatePossibleArray(numbers: number[]) {
-    // numbers = [1,1,1,1,1];
     numbers.sort();
-    console.log('dice roll', numbers);
 
-
-    //Yatzee condition
+    // Yatzee condition
     if (new Set(numbers).size == 1) {
-      if(this.score.yahtzee === 50){
-        if(this.score.yahtzeeBonus){
+      if (this.score.yahtzee === 50) {
+        if (this.score.yahtzeeBonus) {
           this.possibleScore.yahtzeeBonus = this.score.yahtzeeBonus + 100;
-        }else{
+        } else {
           this.possibleScore.yahtzeeBonus = 100;
         }
-      }else{
+      } else {
         this.possibleScore.yahtzee = 50;
         this.possibleScore.yahtzeeBonus = null;
       }
     }
 
-    //long straight condition
-    let longStraight = JSON.stringify(numbers) === JSON.stringify([1,2,3,4,5]) || JSON.stringify(numbers) === JSON.stringify([2,3,4,5,6]);
-    if(longStraight){
-      if(!this.score.lgStraight){
+    // long straight condition
+    const longStraight =
+      JSON.stringify(numbers) === JSON.stringify([1, 2, 3, 4, 5]) ||
+      JSON.stringify(numbers) === JSON.stringify([2, 3, 4, 5, 6]);
+    if (longStraight) {
+      if (!this.score.lgStraight) {
         this.possibleScore.lgStraight = 40;
       }
     }
 
-    //short straight condition
-    let s1 = new Set(numbers);
-    if(longStraight || _.isEqual(s1, new Set([1,2,3,4])) || _.isEqual(s1, new Set([2,3,4,5])) || _.isEqual(s1, new Set([3,4,5,6])) || _.isEqual(s1, new Set([1,2,3,4,6])) || _.isEqual(s1, new Set([1,3,4,5,6]))){
-      if(!this.score.smStraight){
+    // short straight condition
+    const s1 = new Set(numbers);
+    if (
+      longStraight ||
+      _.isEqual(s1, new Set([1, 2, 3, 4])) ||
+      _.isEqual(s1, new Set([2, 3, 4, 5])) ||
+      _.isEqual(s1, new Set([3, 4, 5, 6])) ||
+      _.isEqual(s1, new Set([1, 2, 3, 4, 6])) ||
+      _.isEqual(s1, new Set([1, 3, 4, 5, 6]))
+    ) {
+      if (!this.score.smStraight) {
         this.possibleScore.smStraight = 30;
       }
     }
 
-    //fullhouse condition
-    if((numbers[0] == numbers[1] && numbers[1] == numbers[2] && numbers[3] == numbers[4]) || (numbers[0] == numbers[1] && numbers[2] == numbers[3] && numbers[3] == numbers[4]) ){
-      if(!this.score.fullHouse){
+    // fullhouse condition
+    if (
+      (numbers[0] === numbers[1] &&
+        numbers[1] === numbers[2] &&
+        numbers[3] === numbers[4]) ||
+      (numbers[0] === numbers[1] &&
+        numbers[2] === numbers[3] &&
+        numbers[3] === numbers[4])
+    ) {
+      if (!this.score.fullHouse) {
         this.possibleScore.fullHouse = 25;
       }
     }
 
-    //four of a kind condition
-    if((numbers[0] == numbers[1] && numbers[1] == numbers[2] && numbers[2] == numbers[3]) || (numbers[1] == numbers[2] && numbers[2] == numbers[3] && numbers[3] == numbers[4])){
-      if(!this.score.fourOfAKind){
-        this.possibleScore.fourOfAKind = numbers.reduce((a,b) => a+b, 0);
+    // four of a kind condition
+    if (
+      (numbers[0] === numbers[1] &&
+        numbers[1] === numbers[2] &&
+        numbers[2] === numbers[3]) ||
+      (numbers[1] === numbers[2] &&
+        numbers[2] === numbers[3] &&
+        numbers[3] === numbers[4])
+    ) {
+      if (!this.score.fourOfAKind) {
+        this.possibleScore.fourOfAKind = numbers.reduce((a, b) => a + b, 0);
       }
     }
 
-    //three of a kind condition
-    if((numbers[0] == numbers[1] && numbers[1] == numbers[2]) || (numbers[1] == numbers[2] && numbers[2] == numbers[3]) || (numbers[2] == numbers[3] && numbers[3] == numbers[4])){
-      if(!this.score.threeOfAKind){
-        this.possibleScore.threeOfAKind = numbers.reduce((a,b) => a+b, 0);
+    // three of a kind condition
+    if (
+      (numbers[0] === numbers[1] && numbers[1] === numbers[2]) ||
+      (numbers[1] === numbers[2] && numbers[2] === numbers[3]) ||
+      (numbers[2] === numbers[3] && numbers[3] === numbers[4])
+    ) {
+      if (!this.score.threeOfAKind) {
+        this.possibleScore.threeOfAKind = numbers.reduce((a, b) => a + b, 0);
       }
     }
 
-    //count and add six
-    if(!this.score.six){
-      this.possibleScore.six = numbers.filter(x => x == 6).reduce((a,b) => a+b, 0);
+    // count and add six
+    if (!this.score.six) {
+      this.possibleScore.six = numbers
+        .filter(x => x === 6)
+        .reduce((a, b) => a + b, 0);
     }
 
-    //count and add five
-    if(!this.score.five){
-      this.possibleScore.five = numbers.filter(x => x == 5).reduce((a,b) => a+b, 0);
+    // count and add five
+    if (!this.score.five) {
+      this.possibleScore.five = numbers
+        .filter(x => x === 5)
+        .reduce((a, b) => a + b, 0);
     }
 
-    //count and add six
-    if(!this.score.four){
-      this.possibleScore.four = numbers.filter(x => x == 4).reduce((a,b) => a+b, 0);
+    // count and add six
+    if (!this.score.four) {
+      this.possibleScore.four = numbers
+        .filter(x => x === 4)
+        .reduce((a, b) => a + b, 0);
     }
 
-    //count and add six
-    if(!this.score.three){
-      this.possibleScore.three = numbers.filter(x => x == 3).reduce((a,b) => a+b, 0);
+    // count and add six
+    if (!this.score.three) {
+      this.possibleScore.three = numbers
+        .filter(x => x === 3)
+        .reduce((a, b) => a + b, 0);
     }
 
-    //count and add six
-    if(!this.score.two){
-      this.possibleScore.two = numbers.filter(x => x == 2).reduce((a,b) => a+b, 0);
+    // count and add six
+    if (!this.score.two) {
+      this.possibleScore.two = numbers
+        .filter(x => x === 2)
+        .reduce((a, b) => a + b, 0);
     }
 
-    //count and add six
-    if(!this.score.one){
-      this.possibleScore.one = numbers.filter(x => x == 1).reduce((a,b) => a+b, 0);
+    // count and add six
+    if (!this.score.one) {
+      this.possibleScore.one = numbers
+        .filter(x => x === 1)
+        .reduce((a, b) => a + b, 0);
     }
 
-    //chance condition
-    if(!this.score.chance){
-      this.possibleScore.chance = numbers.reduce((a,b) => a+b, 0);
+    // chance condition
+    if (!this.score.chance) {
+      this.possibleScore.chance = numbers.reduce((a, b) => a + b, 0);
     }
 
     this.possibleArrayDefined = true;
-
   }
 
-  handleNewScore(event){
+  handleNewScore(event) {
     this.score = event;
 
     this.calculateTotalAndBonus();
 
     this.round++;
 
-    //gameover condition
-    if(this.round > 13){
-      console.log('restarting');
+    // gameover condition
+    if (this.round > 13) {
       this.gameover();
       this.restartGame();
       return;
@@ -294,39 +312,39 @@ export class AppComponent {
   }
 
   calculateTotalAndBonus() {
+    // total of upper section
+    this.score.totalScore =
+      this.score.one +
+      this.score.two +
+      this.score.three +
+      this.score.four +
+      this.score.five +
+      this.score.six;
 
-    //total of upper section
-    this.score.totalScore = this.score.one +
-    this.score.two +
-    this.score.three +
-    this.score.four +
-    this.score.five +
-    this.score.six;
-
-    //bonus condition
+    // bonus condition
     if (this.score.totalScore > 63) {
       this.score.bonus = 35;
     }
 
-    //grand sum of upper section with bonus
+    // grand sum of upper section with bonus
     this.score.upperSectionTotal = this.score.totalScore + this.score.bonus;
 
-    //lower section total
-    this.score.lowerSectionTotal = this.score.threeOfAKind +
-    this.score.fourOfAKind +
-    this.score.fullHouse +
-    this.score.smStraight +
-    this.score.lgStraight +
-    this.score.yahtzee +
-    this.score.chance +
-    this.score.yahtzeeBonus;
+    // lower section total
+    this.score.lowerSectionTotal =
+      this.score.threeOfAKind +
+      this.score.fourOfAKind +
+      this.score.fullHouse +
+      this.score.smStraight +
+      this.score.lgStraight +
+      this.score.yahtzee +
+      this.score.chance +
+      this.score.yahtzeeBonus;
 
-    //grand total
-    this.score.combinedTotal = this.score.upperSectionTotal + this.score.lowerSectionTotal;
+    // grand total
+    this.score.combinedTotal =
+      this.score.upperSectionTotal + this.score.lowerSectionTotal;
 
-    console.log('new score ', this.score);
     this.updateTable();
-
   }
 
   restartGame() {
@@ -367,7 +385,6 @@ export class AppComponent {
 
   updateTable() {
     this.allScores[this.allScores.length - 1] = this.score;
-    console.log(this.allScores);
   }
 
   gameover() {

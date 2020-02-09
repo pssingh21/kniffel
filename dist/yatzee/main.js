@@ -76,7 +76,7 @@ module.exports = ".attempt{\n  color: #fff;\n}\n\n.diceRoll{\n  width: 150px;\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<span *ngFor=\"let dataEntry of dice\" >\n  <app-dice [diceNum]=\"dataEntry.num\" [shouldDiceRoll]=\"dataEntry.rollDice\" (diceResult)=\"handleResult($event)\" #child></app-dice>\n</span>\n<div class=\"btnWrapper\">\n  <!-- <h1 class=\"attempt\" [hidden]=\"attempts==0\" >Attempt: {{attempts}} </h1> -->\n  <button mat-raised-button ripple=\"true\" (click)=\"rollRemaining()\" *ngIf=\"!possibleArrayDefined\" [matBadge]=\"attempts\" matBadgeDescription=\"adasdasd\" matBadgeSize=\"large\" matBadgePosition=\"above after\" matBadgeColor=\"primary\" [matBadgeHidden]=\"attempts==0\" [disabled]=\"computing\" class=\"diceRoll\">Dice Roll</button>\n  <app-decide-move [possibleScore]=\"possibleScore\" [score]=\"score\" *ngIf=\"possibleArrayDefined\" (newScore)=\"handleNewScore($event)\" ></app-decide-move>\n</div>\n\n<app-table-component [(tableValues)]=\"allScores\" ></app-table-component>\n<router-outlet></router-outlet>\n"
+module.exports = "<span *ngFor=\"let dataEntry of dice\" >\n  <app-dice [diceNum]=\"dataEntry.num\" [shouldDiceRoll]=\"dataEntry.rollDice\" (diceResult)=\"handleResult($event)\" #child></app-dice>\n</span>\n<div class=\"btnWrapper\">\n  <button mat-raised-button ripple=\"true\" (click)=\"rollRemaining()\" *ngIf=\"!possibleArrayDefined\" [matBadge]=\"attempts\" matBadgeDescription=\"adasdasd\" matBadgeSize=\"large\" matBadgePosition=\"above after\" matBadgeColor=\"primary\" [matBadgeHidden]=\"attempts==0\" [disabled]=\"computing\" class=\"diceRoll\">Dice Roll</button>\n  <app-decide-move [possibleScore]=\"possibleScore\" [score]=\"score\" *ngIf=\"possibleArrayDefined\" (newScore)=\"handleNewScore($event)\" ></app-decide-move>\n</div>\n\n<app-table-component [(tableValues)]=\"allScores\" ></app-table-component>\n<router-outlet></router-outlet>\n"
 
 /***/ }),
 
@@ -114,7 +114,7 @@ var AppComponent = /** @class */ (function () {
         this.dice[event.diceNum - 1].rollDice = !event.isSelected;
         this.dice.filter(function (elem) {
             return elem.rollDice === true;
-        }).length === 0 && this.attempts != 3
+        }).length === 0 && this.attempts !== 3
             ? this.compute()
             : null;
     };
@@ -148,19 +148,6 @@ var AppComponent = /** @class */ (function () {
             return item.result;
         });
         this.populatePossibleArray(numbers);
-        //------------------------------------------------------------------//
-        // setTimeout(() => {
-        //   this.attempts = 0;
-        //   console.log(this.diceChildren.toArray());
-        //   this.diceChildren.toArray().forEach(element => {
-        //     element.canSelect = false;
-        //     element.shouldDiceRoll = true;
-        //     element.unselectDice();
-        //     this.computing = false;
-        //     this.possibleArrayDefined = false;
-        //   });
-        // }, 5000);
-        // this.computing = false;
     };
     AppComponent.prototype.initializeScore = function () {
         this.score = {
@@ -213,10 +200,8 @@ var AppComponent = /** @class */ (function () {
         };
     };
     AppComponent.prototype.populatePossibleArray = function (numbers) {
-        // numbers = [1,1,1,1,1];
         numbers.sort();
-        console.log('dice roll', numbers);
-        //Yatzee condition
+        // Yatzee condition
         if (new Set(numbers).size == 1) {
             if (this.score.yahtzee === 50) {
                 if (this.score.yahtzeeBonus) {
@@ -231,63 +216,93 @@ var AppComponent = /** @class */ (function () {
                 this.possibleScore.yahtzeeBonus = null;
             }
         }
-        //long straight condition
-        var longStraight = JSON.stringify(numbers) === JSON.stringify([1, 2, 3, 4, 5]) || JSON.stringify(numbers) === JSON.stringify([2, 3, 4, 5, 6]);
+        // long straight condition
+        var longStraight = JSON.stringify(numbers) === JSON.stringify([1, 2, 3, 4, 5]) ||
+            JSON.stringify(numbers) === JSON.stringify([2, 3, 4, 5, 6]);
         if (longStraight) {
             if (!this.score.lgStraight) {
                 this.possibleScore.lgStraight = 40;
             }
         }
-        //short straight condition
+        // short straight condition
         var s1 = new Set(numbers);
-        if (longStraight || lodash__WEBPACK_IMPORTED_MODULE_2__["isEqual"](s1, new Set([1, 2, 3, 4])) || lodash__WEBPACK_IMPORTED_MODULE_2__["isEqual"](s1, new Set([2, 3, 4, 5])) || lodash__WEBPACK_IMPORTED_MODULE_2__["isEqual"](s1, new Set([3, 4, 5, 6])) || lodash__WEBPACK_IMPORTED_MODULE_2__["isEqual"](s1, new Set([1, 2, 3, 4, 6])) || lodash__WEBPACK_IMPORTED_MODULE_2__["isEqual"](s1, new Set([1, 3, 4, 5, 6]))) {
+        if (longStraight ||
+            lodash__WEBPACK_IMPORTED_MODULE_2__["isEqual"](s1, new Set([1, 2, 3, 4])) ||
+            lodash__WEBPACK_IMPORTED_MODULE_2__["isEqual"](s1, new Set([2, 3, 4, 5])) ||
+            lodash__WEBPACK_IMPORTED_MODULE_2__["isEqual"](s1, new Set([3, 4, 5, 6])) ||
+            lodash__WEBPACK_IMPORTED_MODULE_2__["isEqual"](s1, new Set([1, 2, 3, 4, 6])) ||
+            lodash__WEBPACK_IMPORTED_MODULE_2__["isEqual"](s1, new Set([1, 3, 4, 5, 6]))) {
             if (!this.score.smStraight) {
                 this.possibleScore.smStraight = 30;
             }
         }
-        //fullhouse condition
-        if ((numbers[0] == numbers[1] && numbers[1] == numbers[2] && numbers[3] == numbers[4]) || (numbers[0] == numbers[1] && numbers[2] == numbers[3] && numbers[3] == numbers[4])) {
+        // fullhouse condition
+        if ((numbers[0] === numbers[1] &&
+            numbers[1] === numbers[2] &&
+            numbers[3] === numbers[4]) ||
+            (numbers[0] === numbers[1] &&
+                numbers[2] === numbers[3] &&
+                numbers[3] === numbers[4])) {
             if (!this.score.fullHouse) {
                 this.possibleScore.fullHouse = 25;
             }
         }
-        //four of a kind condition
-        if ((numbers[0] == numbers[1] && numbers[1] == numbers[2] && numbers[2] == numbers[3]) || (numbers[1] == numbers[2] && numbers[2] == numbers[3] && numbers[3] == numbers[4])) {
+        // four of a kind condition
+        if ((numbers[0] === numbers[1] &&
+            numbers[1] === numbers[2] &&
+            numbers[2] === numbers[3]) ||
+            (numbers[1] === numbers[2] &&
+                numbers[2] === numbers[3] &&
+                numbers[3] === numbers[4])) {
             if (!this.score.fourOfAKind) {
                 this.possibleScore.fourOfAKind = numbers.reduce(function (a, b) { return a + b; }, 0);
             }
         }
-        //three of a kind condition
-        if ((numbers[0] == numbers[1] && numbers[1] == numbers[2]) || (numbers[1] == numbers[2] && numbers[2] == numbers[3]) || (numbers[2] == numbers[3] && numbers[3] == numbers[4])) {
+        // three of a kind condition
+        if ((numbers[0] === numbers[1] && numbers[1] === numbers[2]) ||
+            (numbers[1] === numbers[2] && numbers[2] === numbers[3]) ||
+            (numbers[2] === numbers[3] && numbers[3] === numbers[4])) {
             if (!this.score.threeOfAKind) {
                 this.possibleScore.threeOfAKind = numbers.reduce(function (a, b) { return a + b; }, 0);
             }
         }
-        //count and add six
+        // count and add six
         if (!this.score.six) {
-            this.possibleScore.six = numbers.filter(function (x) { return x == 6; }).reduce(function (a, b) { return a + b; }, 0);
+            this.possibleScore.six = numbers
+                .filter(function (x) { return x === 6; })
+                .reduce(function (a, b) { return a + b; }, 0);
         }
-        //count and add five
+        // count and add five
         if (!this.score.five) {
-            this.possibleScore.five = numbers.filter(function (x) { return x == 5; }).reduce(function (a, b) { return a + b; }, 0);
+            this.possibleScore.five = numbers
+                .filter(function (x) { return x === 5; })
+                .reduce(function (a, b) { return a + b; }, 0);
         }
-        //count and add six
+        // count and add six
         if (!this.score.four) {
-            this.possibleScore.four = numbers.filter(function (x) { return x == 4; }).reduce(function (a, b) { return a + b; }, 0);
+            this.possibleScore.four = numbers
+                .filter(function (x) { return x === 4; })
+                .reduce(function (a, b) { return a + b; }, 0);
         }
-        //count and add six
+        // count and add six
         if (!this.score.three) {
-            this.possibleScore.three = numbers.filter(function (x) { return x == 3; }).reduce(function (a, b) { return a + b; }, 0);
+            this.possibleScore.three = numbers
+                .filter(function (x) { return x === 3; })
+                .reduce(function (a, b) { return a + b; }, 0);
         }
-        //count and add six
+        // count and add six
         if (!this.score.two) {
-            this.possibleScore.two = numbers.filter(function (x) { return x == 2; }).reduce(function (a, b) { return a + b; }, 0);
+            this.possibleScore.two = numbers
+                .filter(function (x) { return x === 2; })
+                .reduce(function (a, b) { return a + b; }, 0);
         }
-        //count and add six
+        // count and add six
         if (!this.score.one) {
-            this.possibleScore.one = numbers.filter(function (x) { return x == 1; }).reduce(function (a, b) { return a + b; }, 0);
+            this.possibleScore.one = numbers
+                .filter(function (x) { return x === 1; })
+                .reduce(function (a, b) { return a + b; }, 0);
         }
-        //chance condition
+        // chance condition
         if (!this.score.chance) {
             this.possibleScore.chance = numbers.reduce(function (a, b) { return a + b; }, 0);
         }
@@ -298,9 +313,8 @@ var AppComponent = /** @class */ (function () {
         this.score = event;
         this.calculateTotalAndBonus();
         this.round++;
-        //gameover condition
+        // gameover condition
         if (this.round > 13) {
-            console.log('restarting');
             this.gameover();
             this.restartGame();
             return;
@@ -316,31 +330,33 @@ var AppComponent = /** @class */ (function () {
         });
     };
     AppComponent.prototype.calculateTotalAndBonus = function () {
-        //total of upper section
-        this.score.totalScore = this.score.one +
-            this.score.two +
-            this.score.three +
-            this.score.four +
-            this.score.five +
-            this.score.six;
-        //bonus condition
+        // total of upper section
+        this.score.totalScore =
+            this.score.one +
+                this.score.two +
+                this.score.three +
+                this.score.four +
+                this.score.five +
+                this.score.six;
+        // bonus condition
         if (this.score.totalScore > 63) {
             this.score.bonus = 35;
         }
-        //grand sum of upper section with bonus
+        // grand sum of upper section with bonus
         this.score.upperSectionTotal = this.score.totalScore + this.score.bonus;
-        //lower section total
-        this.score.lowerSectionTotal = this.score.threeOfAKind +
-            this.score.fourOfAKind +
-            this.score.fullHouse +
-            this.score.smStraight +
-            this.score.lgStraight +
-            this.score.yahtzee +
-            this.score.chance +
-            this.score.yahtzeeBonus;
-        //grand total
-        this.score.combinedTotal = this.score.upperSectionTotal + this.score.lowerSectionTotal;
-        console.log('new score ', this.score);
+        // lower section total
+        this.score.lowerSectionTotal =
+            this.score.threeOfAKind +
+                this.score.fourOfAKind +
+                this.score.fullHouse +
+                this.score.smStraight +
+                this.score.lgStraight +
+                this.score.yahtzee +
+                this.score.chance +
+                this.score.yahtzeeBonus;
+        // grand total
+        this.score.combinedTotal =
+            this.score.upperSectionTotal + this.score.lowerSectionTotal;
         this.updateTable();
     };
     AppComponent.prototype.restartGame = function () {
@@ -380,7 +396,6 @@ var AppComponent = /** @class */ (function () {
     };
     AppComponent.prototype.updateTable = function () {
         this.allScores[this.allScores.length - 1] = this.score;
-        console.log(this.allScores);
     };
     AppComponent.prototype.gameover = function () {
         this.toastr.success(this.score.combinedTotal.toString(), 'Score');
@@ -541,7 +556,7 @@ var DecideMoveComponent = /** @class */ (function () {
     ], DecideMoveComponent.prototype, "newScore", void 0);
     DecideMoveComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            selector: "app-decide-move",
+            selector: 'app-decide-move',
             template: __webpack_require__(/*! ./decide-move.component.html */ "./src/app/decide-move/decide-move.component.html"),
             styles: [__webpack_require__(/*! ./decide-move.component.css */ "./src/app/decide-move/decide-move.component.css")]
         }),
@@ -597,7 +612,7 @@ var DiceComponent = /** @class */ (function () {
     }
     DiceComponent.prototype.selectDice = function () {
         if (this.canSelect) {
-            this.dice.nativeElement.classList.add("diceSelected");
+            this.dice.nativeElement.classList.add('diceSelected');
             this.diceResult.emit({
                 diceNum: this.diceNum,
                 result: this.roll,
@@ -607,18 +622,12 @@ var DiceComponent = /** @class */ (function () {
         }
     };
     DiceComponent.prototype.unselectDice = function () {
-        this.dice.nativeElement.classList.remove("diceSelected");
+        this.dice.nativeElement.classList.remove('diceSelected');
         this.diceResult.emit({
             diceNum: this.diceNum,
             result: this.roll,
             isSelected: false
         });
-    };
-    DiceComponent.prototype.ngAfterViewInit = function () {
-        var delay = Math.random() * 1000;
-        setTimeout(function () {
-            // this.rollAll();
-        }, delay);
     };
     DiceComponent.prototype.ngOnInit = function () { };
     DiceComponent.prototype.rollDice = function () {
@@ -628,9 +637,9 @@ var DiceComponent = /** @class */ (function () {
         }
         this.roll = Math.floor(Math.random() * 6 + 1);
         this.dice.nativeElement.classList = [];
-        this.dice.nativeElement.classList.add("dice");
+        this.dice.nativeElement.classList.add('dice');
         setTimeout(function () {
-            _this.dice.nativeElement.classList.add("roll-" + _this.roll);
+            _this.dice.nativeElement.classList.add('roll-' + _this.roll);
             _this.diceResult.emit({
                 diceNum: _this.diceNum,
                 result: _this.roll,
@@ -645,7 +654,7 @@ var DiceComponent = /** @class */ (function () {
         this.rollDice();
     };
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewChild"])("dice"),
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewChild"])('dice'),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"])
     ], DiceComponent.prototype, "dice", void 0);
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
@@ -662,7 +671,7 @@ var DiceComponent = /** @class */ (function () {
     ], DiceComponent.prototype, "diceResult", void 0);
     DiceComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            selector: "app-dice",
+            selector: 'app-dice',
             template: __webpack_require__(/*! ./dice.component.html */ "./src/app/dice/dice.component.html"),
             styles: [__webpack_require__(/*! ./dice.component.css */ "./src/app/dice/dice.component.css")]
         }),
@@ -693,7 +702,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<table mat-table [dataSource]=\"tableValues\" class=\"mat-elevation-z8\" style=\"width: 100%;\">\n\n  <ng-container matColumnDef=\"game\" >\n    <th mat-header-cell *matHeaderCellDef> Game </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.game}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"one\" >\n    <th mat-header-cell *matHeaderCellDef> One </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.one}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"two\" >\n    <th mat-header-cell *matHeaderCellDef> Two </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.two}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"three\" >\n    <th mat-header-cell *matHeaderCellDef> Three </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.three}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"four\" >\n    <th mat-header-cell *matHeaderCellDef> Four </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.four}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"five\" >\n    <th mat-header-cell *matHeaderCellDef> Five </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.five}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"six\" >\n    <th mat-header-cell *matHeaderCellDef> Six </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.six}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"totalScore\" >\n    <th mat-header-cell *matHeaderCellDef> Total Score </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.totalScore}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"bonus\" >\n    <th mat-header-cell *matHeaderCellDef> Bonus </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.bonus}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"upperSectionTotal\" >\n    <th mat-header-cell *matHeaderCellDef> Total </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.upperSectionTotal}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"threeOfAKind\" >\n    <th mat-header-cell *matHeaderCellDef> Three of a Kind </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.threeOfAKind}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"fourOfAKind\" >\n    <th mat-header-cell *matHeaderCellDef> Four of a Kind </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.fourOfAKind}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"fullHouse\" >\n    <th mat-header-cell *matHeaderCellDef> Full House </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.fullHouse}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"smStraight\" >\n    <th mat-header-cell *matHeaderCellDef> Small Straight </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.smStraight}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"lgStraight\" >\n    <th mat-header-cell *matHeaderCellDef> Long Straight </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.lgStraight}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"yahtzee\" >\n    <th mat-header-cell *matHeaderCellDef> Yahtzee </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.yahtzee}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"yahtzeeBonus\" >\n    <th mat-header-cell *matHeaderCellDef> Yahtzee Bonus </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.yahtzeeBonus}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"chance\" >\n    <th mat-header-cell *matHeaderCellDef> Chance </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.chance}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"lowerSectionTotal\" >\n    <th mat-header-cell *matHeaderCellDef> Lower Section Total </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.lowerSectionTotal}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"combinedTotal\" >\n    <th mat-header-cell *matHeaderCellDef> Combined Total </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.combinedTotal}} </td>\n  </ng-container>\n\n\n  <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr>\n  <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\"></tr>\n</table>\n\n\n<!-- <mat-table #table [dataSource]=\"tableValues\">\n  <ng-container [matColumnDef]=\"col\" *ngFor=\"let col of displayedColumns\">\n  <mat-header-cell *matHeaderCellDef> {{ col }} </mat-header-cell>\n  <mat-cell *matCellDef=\"let element\"> {{ element[col] }} </mat-cell>\n  </ng-container>\n  <mat-header-row *matHeaderRowDef=\"displayedColumns\"></mat-header-row>\n  <mat-row *matRowDef=\"let row; columns: displayedColumns;\"></mat-row>\n</mat-table> -->\n"
+module.exports = "<table mat-table [dataSource]=\"tableValues\" class=\"mat-elevation-z8\" style=\"width: 100%;\">\n\n  <ng-container matColumnDef=\"game\" >\n    <th mat-header-cell *matHeaderCellDef> Game </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.game}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"one\" >\n    <th mat-header-cell *matHeaderCellDef> One </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.one}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"two\" >\n    <th mat-header-cell *matHeaderCellDef> Two </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.two}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"three\" >\n    <th mat-header-cell *matHeaderCellDef> Three </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.three}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"four\" >\n    <th mat-header-cell *matHeaderCellDef> Four </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.four}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"five\" >\n    <th mat-header-cell *matHeaderCellDef> Five </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.five}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"six\" >\n    <th mat-header-cell *matHeaderCellDef> Six </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.six}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"totalScore\" >\n    <th mat-header-cell *matHeaderCellDef> Total Score </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.totalScore}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"bonus\" >\n    <th mat-header-cell *matHeaderCellDef> Bonus </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.bonus}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"upperSectionTotal\" >\n    <th mat-header-cell *matHeaderCellDef> Total </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.upperSectionTotal}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"threeOfAKind\" >\n    <th mat-header-cell *matHeaderCellDef> Three of a Kind </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.threeOfAKind}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"fourOfAKind\" >\n    <th mat-header-cell *matHeaderCellDef> Four of a Kind </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.fourOfAKind}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"fullHouse\" >\n    <th mat-header-cell *matHeaderCellDef> Full House </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.fullHouse}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"smStraight\" >\n    <th mat-header-cell *matHeaderCellDef> Small Straight </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.smStraight}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"lgStraight\" >\n    <th mat-header-cell *matHeaderCellDef> Long Straight </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.lgStraight}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"yahtzee\" >\n    <th mat-header-cell *matHeaderCellDef> Yahtzee </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.yahtzee}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"yahtzeeBonus\" >\n    <th mat-header-cell *matHeaderCellDef> Yahtzee Bonus </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.yahtzeeBonus}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"chance\" >\n    <th mat-header-cell *matHeaderCellDef> Chance </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.chance}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"lowerSectionTotal\" >\n    <th mat-header-cell *matHeaderCellDef> Lower Section Total </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.lowerSectionTotal}} </td>\n  </ng-container>\n\n  <ng-container matColumnDef=\"combinedTotal\" >\n    <th mat-header-cell *matHeaderCellDef> Combined Total </th>\n    <td mat-cell *matCellDef=\"let score\"> {{score.combinedTotal}} </td>\n  </ng-container>\n\n\n  <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr>\n  <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\"></tr>\n</table>\n"
 
 /***/ }),
 

@@ -2,7 +2,6 @@
   <app-dice [diceNum]="dataEntry.num" [shouldDiceRoll]="dataEntry.rollDice" (diceResult)="handleResult($event)" #child></app-dice>
 </span>
 <div class="btnWrapper">
-  <!-- <h1 class="attempt" [hidden]="attempts==0" >Attempt: {{attempts}} </h1> -->
   <button mat-raised-button ripple="true" (click)="rollRemaining()" *ngIf="!possibleArrayDefined" [matBadge]="attempts" matBadgeDescription="adasdasd" matBadgeSize="large" matBadgePosition="above after" matBadgeColor="primary" [matBadgeHidden]="attempts==0" [disabled]="computing" class="diceRoll">Dice Roll</button>
   <app-decide-move [possibleScore]="possibleScore" [score]="score" *ngIf="possibleArrayDefined" (newScore)="handleNewScore($event)" ></app-decide-move>
 </div>
