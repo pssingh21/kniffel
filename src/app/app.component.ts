@@ -87,12 +87,6 @@ export class AppComponent {
     }
   }
 
-  // reloadAll() {
-  //   this.diceChildren.toArray().forEach(element => {
-  //     element.rollAll();
-  //   });
-  // }
-
   compute() {
     this.computing = true;
 
