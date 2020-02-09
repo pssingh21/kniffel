@@ -1,0 +1,16 @@
+.attempt{
+  color: #fff;
+}
+
+.diceRoll{
+  width: 150px;
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}
+
+.btnWrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

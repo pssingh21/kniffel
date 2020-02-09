@@ -1,0 +1,116 @@
+<table mat-table [dataSource]="tableValues" class="mat-elevation-z8" style="width: 100%;">
+
+  <ng-container matColumnDef="game" >
+    <th mat-header-cell *matHeaderCellDef> Game </th>
+    <td mat-cell *matCellDef="let score"> {{score.game}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="one" >
+    <th mat-header-cell *matHeaderCellDef> One </th>
+    <td mat-cell *matCellDef="let score"> {{score.one}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="two" >
+    <th mat-header-cell *matHeaderCellDef> Two </th>
+    <td mat-cell *matCellDef="let score"> {{score.two}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="three" >
+    <th mat-header-cell *matHeaderCellDef> Three </th>
+    <td mat-cell *matCellDef="let score"> {{score.three}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="four" >
+    <th mat-header-cell *matHeaderCellDef> Four </th>
+    <td mat-cell *matCellDef="let score"> {{score.four}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="five" >
+    <th mat-header-cell *matHeaderCellDef> Five </th>
+    <td mat-cell *matCellDef="let score"> {{score.five}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="six" >
+    <th mat-header-cell *matHeaderCellDef> Six </th>
+    <td mat-cell *matCellDef="let score"> {{score.six}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="totalScore" >
+    <th mat-header-cell *matHeaderCellDef> Total Score </th>
+    <td mat-cell *matCellDef="let score"> {{score.totalScore}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="bonus" >
+    <th mat-header-cell *matHeaderCellDef> Bonus </th>
+    <td mat-cell *matCellDef="let score"> {{score.bonus}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="upperSectionTotal" >
+    <th mat-header-cell *matHeaderCellDef> Total </th>
+    <td mat-cell *matCellDef="let score"> {{score.upperSectionTotal}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="threeOfAKind" >
+    <th mat-header-cell *matHeaderCellDef> Three of a Kind </th>
+    <td mat-cell *matCellDef="let score"> {{score.threeOfAKind}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="fourOfAKind" >
+    <th mat-header-cell *matHeaderCellDef> Four of a Kind </th>
+    <td mat-cell *matCellDef="let score"> {{score.fourOfAKind}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="fullHouse" >
+    <th mat-header-cell *matHeaderCellDef> Full House </th>
+    <td mat-cell *matCellDef="let score"> {{score.fullHouse}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="smStraight" >
+    <th mat-header-cell *matHeaderCellDef> Small Straight </th>
+    <td mat-cell *matCellDef="let score"> {{score.smStraight}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="lgStraight" >
+    <th mat-header-cell *matHeaderCellDef> Long Straight </th>
+    <td mat-cell *matCellDef="let score"> {{score.lgStraight}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="yahtzee" >
+    <th mat-header-cell *matHeaderCellDef> Yahtzee </th>
+    <td mat-cell *matCellDef="let score"> {{score.yahtzee}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="yahtzeeBonus" >
+    <th mat-header-cell *matHeaderCellDef> Yahtzee Bonus </th>
+    <td mat-cell *matCellDef="let score"> {{score.yahtzeeBonus}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="chance" >
+    <th mat-header-cell *matHeaderCellDef> Chance </th>
+    <td mat-cell *matCellDef="let score"> {{score.chance}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="lowerSectionTotal" >
+    <th mat-header-cell *matHeaderCellDef> Lower Section Total </th>
+    <td mat-cell *matCellDef="let score"> {{score.lowerSectionTotal}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="combinedTotal" >
+    <th mat-header-cell *matHeaderCellDef> Combined Total </th>
+    <td mat-cell *matCellDef="let score"> {{score.combinedTotal}} </td>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+
+<!-- <mat-table #table [dataSource]="tableValues">
+  <ng-container [matColumnDef]="col" *ngFor="let col of displayedColumns">
+  <mat-header-cell *matHeaderCellDef> {{ col }} </mat-header-cell>
+  <mat-cell *matCellDef="let element"> {{ element[col] }} </mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table> -->
